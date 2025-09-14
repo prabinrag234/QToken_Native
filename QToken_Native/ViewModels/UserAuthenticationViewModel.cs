@@ -1,22 +1,18 @@
-﻿using QToken_Native.API;
+﻿using CommunityToolkit.Maui.Alerts;
+using QToken_Native.API;
 using QToken_Native.Models;
 using QToken_Native.Pages;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Windows.Input;
 
-
 namespace QToken_Native.ViewModels
 {
-    public class UserAuthenticationViewModel : INotifyPropertyChanged
+    public class UserAuthenticationViewModel: BaseViewModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
+        
         #region Properties
 
         //Pickers and selections
@@ -115,7 +111,7 @@ namespace QToken_Native.ViewModels
         {
             if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(Password))
             {
-                await Application.Current.MainPage.DisplayAlert("Validation", "Username and password are required.", "OK");
+                await Toast.Make("⚠️ Username and password are required.").Show();
                 return;
             }
 
@@ -140,7 +136,7 @@ namespace QToken_Native.ViewModels
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadAsStringAsync();
-                    await Application.Current.MainPage.DisplayAlert("🎉 Success", "Registration successful!", "OK");
+                    await Toast.Make("✅ Registration Successful! Please log in.").Show();
 
                     // Optionally clear fields or navigate to login
                     Name = UserName = Password = Speciality = string.Empty;
@@ -195,14 +191,13 @@ namespace QToken_Native.ViewModels
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadAsStringAsync();
-                    await Application.Current.MainPage.DisplayAlert("✅ Login", "Welcome back!", "OK");
+                    await Toast.Make("✅ Login, Welcome back!").Show();
                     Application.Current.MainPage = new NavigationPage(new HomePage());
-                    // Optionally navigate to dashboard or store user info
                 }
                 else
                 {
                     var error = await response.Content.ReadAsStringAsync();
-                    await Application.Current.MainPage.DisplayAlert("❌ Login Failed", error, "OK");
+                    await Toast.Make("❌ Login Failed due to network issues").Show();
                 }
             }
             catch (Exception ex)
