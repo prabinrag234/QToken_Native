@@ -3,7 +3,7 @@ using CommunityToolkit.Maui.Core;
 using QToken_Native.API;
 using System.ComponentModel;
 
-namespace QToken_Native.ViewModels
+namespace QToken_Native.Helper
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
@@ -50,5 +50,12 @@ namespace QToken_Native.ViewModels
             }
             await Toast.Make("Max retries reached. API still unreachable.", ToastDuration.Long, 14).Show();
         }
+
+    }
+    public static class ServiceHelper
+    {
+        public static IServiceProvider Services { get; set; }
+
+        public static T GetService<T>() => Services.GetRequiredService<T>();
     }
 }
